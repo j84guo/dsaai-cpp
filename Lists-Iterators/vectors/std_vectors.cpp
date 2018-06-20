@@ -12,15 +12,13 @@ int main(){
   * analogous to Java's java.util.ArrayList
   */
   vector<int> v;
-
+  
   v.push_back(3);
   v.push_back(4);
-
   v.reserve(100);
 
   cout << v.size() << endl;
   cout << v.empty() << endl;
-
   cout << v[0] << endl;
   cout << v.at(1) << endl;
 

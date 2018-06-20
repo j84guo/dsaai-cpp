@@ -44,8 +44,8 @@ int main(){
   * Iterators can be bidirectional or random access.
   * A non-const iterator doesn't usually work with a const reference container, so read-only iteration can be achieved using a const iterator.
   */
-  int sum = vectorSumConstIterator(v);
-  cout << sum << endl;
+  cout <<  vectorSumConstIterator(v) << endl;
+  cout <<  vectorSumIterator(v) << endl;
 
 
 }

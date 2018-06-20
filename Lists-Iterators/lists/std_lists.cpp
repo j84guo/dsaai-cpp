@@ -18,14 +18,11 @@ int main(){
   l.push_back(2.5);
   l.push_back(3.5);
   l.push_back(4.5);
-
   l.push_front(0.5);
-
   cout << l.size() << endl;
 
   l.pop_front();
   l.pop_back();
-
   cout << l.front() << endl;
   cout << l.back() << endl;
 }
