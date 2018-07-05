@@ -19,17 +19,20 @@ public:
   SkipList();
   ~SkipList();
 
-  void emptyBaseLevel();
-  void newTopLevel();
+  void initializeBaseLevel() throw(runtime_error);
+  void initializeEmptyLevel();
+  void newTopLevel() throw(runtime_error);
   void put(K key, V value);
   void insertAfterAbove(SkipNode<K,V>* a, SkipNode<K,V>* b, K key, V value, int level);
-  void erase(K key);
+  void erase(K key) throw(runtime_error);
+  void eraseSentinel(SkipNode<K,V>* node) throw(runtime_error);
 
   bool randomBool() const;
+  bool lastNodeOnLevel(SkipNode<K,V>* node) const throw(runtime_error);
   bool containsKey(K key);
   bool lessOrEqual(SkipNode<K,V>* a, K key) const;
 
-  V get(K key);
+  V get(K key) throw(runtime_error);
 
   SkipNode<K,V>* skipSearch(K key);
 
@@ -59,10 +62,11 @@ ostream& operator<<(ostream& out, const SkipList<K2,V2,C2>& sl)
 /*
 * todo :
 * erase level if last node on a level is removed
-* but keep the top and low levels (invariant) 
+* but keep the top and low levels (invariant)
+* free node memory
 */
 template <typename K, typename V, typename C>
-void SkipList<K,V,C>::erase(K key)
+void SkipList<K,V,C>::erase(K key) throw(runtime_error)
 {
   SkipNode<K,V>* node = skipSearch(key);
 
@@ -75,47 +79,106 @@ void SkipList<K,V,C>::erase(K key)
     upper = node->up;
     node->left->right = node->right;
     node->right->left = node->left;
+
+    if(lastNodeOnLevel(node) && node->left->down != nullptr)
+    {
+      cout << "removing an empty level" << endl;
+      eraseSentinel(node->left);
+      eraseSentinel(node->right);
+    }
+
+    delete node;
     node = upper;
   }
   while(upper != nullptr);
 }
 
 template <typename K, typename V, typename C>
+bool SkipList<K,V,C>::lastNodeOnLevel(SkipNode<K,V>* node) const throw(runtime_error)
+{
+  if(node == nullptr)
+    throw runtime_error("Node is null.");
+
+  return node->left != nullptr && node->right != nullptr
+    && node->left->smallest && node->right->largest;
+}
+
+template <typename K, typename V, typename C>
+void SkipList<K,V,C>::eraseSentinel(SkipNode<K,V>* node) throw(runtime_error)
+{
+  cout << "called eraseSentinel" << endl;
+
+  if(node == nullptr)
+    throw runtime_error("Node is null.");
+
+  if(!node->smallest && !node->largest)
+    throw runtime_error("Node is not a sentinel.");
+
+  if(node->up == nullptr || node->down == nullptr)
+    throw runtime_error("Node is not a deletable sentinel.");
+
+  node->up->down = node->down;
+  node->down->up = node->up;
+  delete node;
+}
+
+template <typename K, typename V, typename C>
 SkipList<K,V,C>::SkipList():
-  start(SkipNode<K,V>::makeSmallest()),
   height(1),
   compare()
 {
-  start->right = SkipNode<K,V>::makeLargest();
-  emptyBaseLevel();
+  initializeEmptyLevel();
+  initializeBaseLevel();
   srand(time(0));
 }
 
 template <typename K, typename V, typename C>
-void SkipList<K,V,C>::emptyBaseLevel()
+void SkipList<K,V,C>::initializeEmptyLevel()
 {
-  if(start == nullptr)
-    throw runtime_error("Start is a null pointer.");
-
-  start->down = SkipNode<K,V>::makeSmallest();
-  start->down->right = SkipNode<K,V>::makeLargest();
-
-  start->down->up = start;
-  start->down->right->left = start->down->right;
+  start = SkipNode<K,V>::makeSmallest();
+  start->right = SkipNode<K,V>::makeLargest();
+  start->right->left = start;
 }
 
 template <typename K, typename V, typename C>
-void SkipList<K,V,C>::newTopLevel()
+void SkipList<K,V,C>::initializeBaseLevel() throw(runtime_error)
 {
   if(start == nullptr)
     throw runtime_error("Start is a null pointer.");
 
+  // create sentinels
+  start->down = SkipNode<K,V>::makeSmallest();
+  start->down->right = SkipNode<K,V>::makeLargest();
+
+  // up/down
+  start->down->up = start;
+  start->down->right->up = start->right;
+  start->right->down = start->down->right;
+
+  // left/right
+  start->down->right->left = start->down->right;
+}
+
+// join positive infinity sentinels
+template <typename K, typename V, typename C>
+void SkipList<K,V,C>::newTopLevel() throw(runtime_error)
+{
+  if(start == nullptr)
+    throw runtime_error("Start is a null pointer.");
+
+  // create new sentinels
   start->up = SkipNode<K,V>::makeSmallest();
   start->up->right = SkipNode<K,V>::makeLargest();
 
+  // up/down
   start->up->down = start;
+  start->up->right->down = start->right;
+  start->right->up = start->up->right;
+
+  //left/right
   start->up->right->left = start->up;
 
+  // update start pointer and height
   start = start->up;
   ++height;
 }
@@ -146,7 +209,7 @@ void SkipList<K,V,C>::put(K key, V value)
 }
 
 template <typename K, typename V, typename C>
-V SkipList<K,V,C>::get(K key)
+V SkipList<K,V,C>::get(K key) throw(runtime_error)
 {
   SkipNode<K,V>* node = skipSearch(key);
 
