@@ -1,5 +1,5 @@
 #include <iostream>
-#include "MinHeap.h"
+#include "AdaptablePq.h"
 
 using namespace std;
 
@@ -9,28 +9,24 @@ struct IntLessThan{
   }
 };
 
-struct MyStruct{
-  int x;
-};
-
 int main(){
-  MinHeap<int, IntLessThan> h;
-  h.insert(10);
-  h.insert(5);
-  h.insert(2);
-  h.insert(13);
-  h.insert(21);
-  h.insert(120);
+  typedef typename AdaptablePq<int, IntLessThan>::Position Position;
+  AdaptablePq<int, IntLessThan> pq;
 
-  while(h.size() > 0){
-    cout << h.min() << endl;
-    h.removeMin();
+  Position a = pq.insert(5);
+  Position b = pq.insert(10);
+  Position c = pq.insert(1);
+  Position d = pq.insert(3);
+  Position e = pq.insert(9);
+
+  pq.remove(c);
+  pq.remove(d);
+
+  pq.replace(a, 100);
+  pq.replace(a, 200);
+
+  while(pq.size() > 0){
+    cout << pq.min() << endl;
+    pq.removeMin();
   }
-
-  MyStruct s;
-  s.x = 10;
-
-  // MyStruct* p = &s;
-  // cout << (*p).x << endl;
-  // cout << p->x << endl;
 }

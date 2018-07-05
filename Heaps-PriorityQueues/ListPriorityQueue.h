@@ -34,7 +34,7 @@ bool ListPriorityQueue<E,C>::empty() const{
 
 template <typename E, typename C>
 void ListPriorityQueue<E,C>::insert(const E& e){
-  auto p = l.begin();
+  list<E>::iterator p = l.begin();
 
   while(p != l.end() && !isLess(e, *p)){
     ++p;

@@ -1,3 +1,8 @@
+/*
+* todo :
+* add error checking, e.g. removing from an empty heap
+*/
+
 #ifndef MIN_HEAP_H
 #define MIN_HEAP_H
 
@@ -54,7 +59,6 @@ void MinHeap<E, C>::insert(const E& e){
 
 template <typename E, typename C>
 void MinHeap<E, C>::removeMin(){
-
   if(size() == 1){
     T.removeLast();
     return;
@@ -65,15 +69,12 @@ void MinHeap<E, C>::removeMin(){
   T.removeLast();
 
   while(T.hasLeft(node)){
-    Position child = T.left(node);
+    Position minChild = T.hasRight(node) && isLess(*T.right(node), *T.left(node)) ?
+      T.right(node) : T.left(node);
 
-    if( T.hasRight(node) && isLess(*(T.right(node)), *child) ){
-      child = T.right(node);
-    }
-
-    if(isLess(*child, *node)){
-      T.swap(node, child);
-      node = child;
+    if(isLess(*minChild, *node)){
+      T.swap(node, minChild);
+      node = minChild;
     }else{
       break;
     }

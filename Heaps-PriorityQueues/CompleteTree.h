@@ -56,7 +56,7 @@ V(1){
 }
 
 /*
-* typename keyword is requred when using a type in terms of a templated type
+* typename keyword is requred when using a type in terms of another type
 * see dependent types https://stackoverflow.com/questions/1600464/templates-problem-typename-as-not-template-function-parameter
 */
 template <typename E>
