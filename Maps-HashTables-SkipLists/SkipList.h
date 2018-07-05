@@ -19,24 +19,26 @@ public:
   SkipList();
   ~SkipList();
 
-  void initializeBaseLevel() throw(runtime_error);
-  void initializeEmptyLevel();
-  void newTopLevel() throw(runtime_error);
   void put(K key, V value);
-  void insertAfterAbove(SkipNode<K,V>* a, SkipNode<K,V>* b, K key, V value, int level);
   void erase(K key) throw(runtime_error);
-  void eraseSentinel(SkipNode<K,V>* node) throw(runtime_error);
 
-  bool randomBool() const;
-  bool lastNodeOnLevel(SkipNode<K,V>* node) const throw(runtime_error);
   bool containsKey(K key);
-  bool lessOrEqual(SkipNode<K,V>* a, K key) const;
 
   V get(K key) throw(runtime_error);
 
+private:
+  bool randomBool() const;
+  bool lastNodeOnLevel(SkipNode<K,V>* node) const throw(runtime_error);
+  bool lessOrEqual(SkipNode<K,V>* a, K key) const;
+
+  void insertAfterAbove(SkipNode<K,V>* a, SkipNode<K,V>* b, K key, V value, int level);
+  void eraseSentinel(SkipNode<K,V>* node) throw(runtime_error);
+  void initializeEmptyLevel();
+  void initializeBaseLevel() throw(runtime_error);
+  void newTopLevel() throw(runtime_error);
+
   SkipNode<K,V>* skipSearch(K key);
 
-private:
   SkipNode<K,V> *start;
   int height;
   C compare; // compares two objects of type K and returns an integer
