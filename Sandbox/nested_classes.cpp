@@ -5,7 +5,7 @@ using namespace std;
 /*
 * A nested class is declared within the scope of another class.
 *
-* Member functions of a NESTED class follow regular access rules but are also
+* Member functions of a nested class follow regular access rules but are also
 * allowed to access private members of the enclosing class. Member functions of
 * the ENCLOSING class have no special access to members of the nested class.
 *
