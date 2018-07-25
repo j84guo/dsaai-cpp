@@ -1,5 +1,5 @@
-#ifndef BINARY_SEARCH_TREE_H
-#define BINARY_SEARCH_TREE_H
+#ifndef BST_SIMPLE_H
+#define BST_SIMPLE_H
 
 #include <iostream>
 #include <stdexcept>
@@ -15,7 +15,7 @@ using std::logic_error;
 *     between the first and second parameters of its callable operator
 */
 template<typename K, typename V, typename C>
-class BinarySearchTree
+class BstSimple
 {
 
 public:
@@ -40,18 +40,18 @@ public:
     Node *right;
     Node *parent;
 
-    friend class BinarySearchTree;
+    friend class BstSimple;
   };
 
 public:
-  BinarySearchTree();
+  BstSimple();
   int getSize() const;
   bool isEmpty() const;
-  const V& get(const K& k);
   void add(const K& k, const V& v);
   void remove(const K& k);
   void erase(const K& k);
   void printInOrder();
+  const V& get(const K& k);
 
 private:
   Node* getNode(const K& k);
@@ -67,14 +67,14 @@ private:
 };
 
 template <typename K, typename V, typename C>
-const V& BinarySearchTree<K,V,C>::get(const K& k)
+const V& BstSimple<K,V,C>::get(const K& k)
 {
   Node* node = getNode(k);
   return node->value;
 }
 
 template <typename K, typename V, typename C>
-void BinarySearchTree<K,V,C>::add(const K& k, const V& v)
+void BstSimple<K,V,C>::add(const K& k, const V& v)
 {
   if(size == 0)
   {
@@ -118,7 +118,7 @@ void BinarySearchTree<K,V,C>::add(const K& k, const V& v)
 }
 
 template <typename K, typename V, typename C>
-void BinarySearchTree<K,V,C>::erase(const K& k)
+void BstSimple<K,V,C>::erase(const K& k)
 {
   Node *node = getNode(k);
 
@@ -144,10 +144,10 @@ void BinarySearchTree<K,V,C>::erase(const K& k)
 * have one child
 */
 template <typename K, typename V, typename C>
-void BinarySearchTree<K,V,C>::eraseInternal(Node *node)
+void BstSimple<K,V,C>::eraseInternal(Node *node)
 {
   if(node == nullptr || (node->left == nullptr && node->right == nullptr))
-    throw logic_error("BinarySearchTree: not an internal node.");
+    throw logic_error("BstSimple: not an internal node.");
 
   if(node->left == nullptr)
   {
@@ -186,10 +186,10 @@ void BinarySearchTree<K,V,C>::eraseInternal(Node *node)
 }
 
 template <typename K, typename V, typename C> typename
-BinarySearchTree<K,V,C>::Node* BinarySearchTree<K,V,C>::inOrderSuccessor(Node* node)
+BstSimple<K,V,C>::Node* BstSimple<K,V,C>::inOrderSuccessor(Node* node)
 {
   if(node == nullptr)
-    throw logic_error("BinarySearchTree: invalid node.");
+    throw logic_error("BstSimple: invalid node.");
 
   if(node->right == nullptr)
   {
@@ -213,13 +213,13 @@ BinarySearchTree<K,V,C>::Node* BinarySearchTree<K,V,C>::inOrderSuccessor(Node* n
 }
 
 template <typename K, typename V, typename C>
-void BinarySearchTree<K,V,C>::eraseLeaf(Node *parent, Node *node)
+void BstSimple<K,V,C>::eraseLeaf(Node *parent, Node *node)
 {
   if(parent == nullptr || node == nullptr)
-    throw logic_error("BinarySearchTree: node or parent is nullptr.");
+    throw logic_error("BstSimple: node or parent is nullptr.");
 
   if(node->parent == nullptr || node->parent != parent)
-    throw logic_error("BinarySearchTree: node has invalid parent pointer.");
+    throw logic_error("BstSimple: node has invalid parent pointer.");
 
   if(parent->left == node)
     parent->left = nullptr;
@@ -230,10 +230,10 @@ void BinarySearchTree<K,V,C>::eraseLeaf(Node *parent, Node *node)
 }
 
 template <typename K, typename V, typename C> typename
-BinarySearchTree<K,V,C>::Node* BinarySearchTree<K,V,C>::getNode(const K& k)
+BstSimple<K,V,C>::Node* BstSimple<K,V,C>::getNode(const K& k)
 {
   if(size == 0)
-    throw logic_error("BinarySearchTree: tree is empty.");
+    throw logic_error("BstSimple: tree is empty.");
 
   Node *node = root;
   while(node != nullptr)
@@ -248,36 +248,36 @@ BinarySearchTree<K,V,C>::Node* BinarySearchTree<K,V,C>::getNode(const K& k)
       return node;
   }
 
-  throw logic_error("BinarySearchTree: key does not exist.");
+  throw logic_error("BstSimple: key does not exist.");
 }
 
 template <typename K, typename V, typename C>
-BinarySearchTree<K,V,C>::BinarySearchTree():
+BstSimple<K,V,C>::BstSimple():
   root(nullptr),
   size(0),
   compare()
 { }
 
 template <typename K, typename V, typename C>
-int BinarySearchTree<K,V,C>::getSize() const
+int BstSimple<K,V,C>::getSize() const
 {
   return size;
 }
 
 template <typename K, typename V, typename C>
-bool BinarySearchTree<K,V,C>::isEmpty() const
+bool BstSimple<K,V,C>::isEmpty() const
 {
   return size == 0;
 }
 
 template <typename K, typename V, typename C>
-void BinarySearchTree<K,V,C>::printInOrder()
+void BstSimple<K,V,C>::printInOrder()
 {
   printInOrder(root);
 }
 
 template <typename K, typename V, typename C>
-void BinarySearchTree<K,V,C>::printInOrder(Node *node)
+void BstSimple<K,V,C>::printInOrder(Node *node)
 {
   if(node == nullptr)
     return;

@@ -1,5 +1,5 @@
 #include <iostream>
-#include "BinarySearchTree.h"
+#include "BstSimple.h"
 
 using namespace std;
 
@@ -16,7 +16,7 @@ public:
 
 int main()
 {
-  BinarySearchTree<int, int, IntComparator> t;
+  BstSimple<int, int, IntComparator> t;
   t.add(10, 10);
   t.add(5, 5);
   t.add(15, 15);
