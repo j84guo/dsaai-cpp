@@ -45,6 +45,7 @@ public:
 
 public:
   BstSimple();
+  ~BstSimple();
   int getSize() const;
   bool isEmpty() const;
   void add(const K& k, const V& v);
@@ -53,18 +54,38 @@ public:
   void printInOrder();
   const V& get(const K& k);
 
-private:
+protected:
   Node* getNode(const K& k);
   Node* inOrderSuccessor(Node* node);
+  void eraseTree(Node *node);
+  void eraseProper(Node *node);
   void eraseInternal(Node *node);
   void eraseLeaf(Node *parent, Node *node);
   void printInOrder(Node *node);
 
+private:
   Node *root;
   int size;
   C compare;
 
 };
+
+template <typename K, typename V, typename C>
+BstSimple<K,V,C>::~BstSimple()
+{
+  eraseTree(root);
+}
+
+template <typename K, typename V, typename C>
+void BstSimple<K,V,C>::eraseTree(Node *node)
+{
+  if(node == nullptr)
+    return;
+
+  eraseTree(node->left);
+  eraseTree(node->right);
+  delete node;
+}
 
 template <typename K, typename V, typename C>
 const V& BstSimple<K,V,C>::get(const K& k)
@@ -140,8 +161,8 @@ void BstSimple<K,V,C>::erase(const K& k)
 }
 
 /*
-* note that this binary tree is not proper/full, meaning internal nodes may only
-* have one child
+* note that this binary tree is not necessarily proper/full, meaning internal
+* nodes may only have one child
 */
 template <typename K, typename V, typename C>
 void BstSimple<K,V,C>::eraseInternal(Node *node)
@@ -149,40 +170,43 @@ void BstSimple<K,V,C>::eraseInternal(Node *node)
   if(node == nullptr || (node->left == nullptr && node->right == nullptr))
     throw logic_error("BstSimple: not an internal node.");
 
+  if(node->left != nullptr && node->right != nullptr)
+    eraseProper(node);
+
+  Node *tmp;
+
   if(node->left == nullptr)
-  {
-    Node *tmp = node->right;
-    node->key = tmp->key;
-    node->value = tmp->value;
-    node->left = tmp->left;
-    node->right = tmp->right;
-    delete tmp;
-  }
+    tmp = node->right;
   else if(node->right == nullptr)
-  {
-    Node *tmp = node->left;
-    node->key = tmp->key;
-    node->value = tmp->value;
-    node->left = tmp->left;
-    node->right = tmp->right;
-    delete tmp;
-  }
+    tmp = node->left;
+
+  node->key = tmp->key;
+  node->value = tmp->value;
+  node->left = tmp->left;
+  node->right = tmp->right;
+
+  delete tmp;
+}
+
+template <typename K, typename V, typename C>
+void BstSimple<K,V,C>::eraseProper(Node *node)
+{
+  if(node == nullptr || node->left == nullptr || node->right == nullptr)
+    throw logic_error("BstSimple: not a proper node.");
+
+  Node *next = inOrderSuccessor(node);
+
+  if(next == nullptr)
+    next = node;
   else
-  {
-    Node *next = inOrderSuccessor(node);
+    node->value = next->value;
 
-    if(next == nullptr)
-      next = node;
-    else
-      node->value = next->value;
+  if(next->parent->left == next)
+    next->parent->left = nullptr;
+  else
+    next->parent->right = nullptr;
 
-    if(next->parent->left == next)
-      next->parent->left = nullptr;
-    else
-      next->parent->right = nullptr;
-
-    delete next;
-  }
+  delete next;
 }
 
 template <typename K, typename V, typename C> typename
