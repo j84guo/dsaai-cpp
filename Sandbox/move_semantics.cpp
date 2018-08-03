@@ -8,11 +8,11 @@ using std::swap;
 
 class String
 {
+  
 private:
   char *data;
 
 public:
-
   /*
   * constructs String object by dynamically allocating an array of characters
   */
