@@ -87,6 +87,9 @@ Stack<T>::~Stack()
  *    copy constructed in the allocated block in place, using IN PLACE NEW,
  *    which is the form of new allowing the location of the object to be user
  *    specified, i.e. new (ptr) TYPE(args...)
+ * 3) the trick with in place new is that de-allocation should not be done via
+ *    delete, rather the destructor of the object should be manually called
+ *    obj_ptr->~TYPE(), the raw memory is freed by the allocator later
  */
 template <typename T>
 T Stack<T>::pop()
