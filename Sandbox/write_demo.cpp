@@ -34,6 +34,10 @@ void write_demo(const string& path, const string& data)
      */
     file << data;
     file.close();
+
+    if (!file) {
+        cerr << "Error writing file!" << endl;
+    }
 }
 
 /** recall argv is an array of char pointers, also valid is char **argv */
