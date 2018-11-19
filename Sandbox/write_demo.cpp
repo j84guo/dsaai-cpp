@@ -35,7 +35,7 @@ void write_demo(const string& path, const string& data)
     file << data;
     file.close();
 
-    if (!file) {
+    if (file.fail()) {
         cerr << "Error writing file!" << endl;
     }
 }
