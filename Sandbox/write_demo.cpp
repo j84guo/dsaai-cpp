@@ -33,11 +33,6 @@ void write_demo(const string& path, const string& data)
      * https://stackoverflow.com/questions/4802494/do-i-need-to-close-a-stdfstream
      */
     file << data;
-    file.close();
-
-    if (file.fail()) {
-        cerr << "Error writing file!" << endl;
-    }
 }
 
 /** recall argv is an array of char pointers, also valid is char **argv */
